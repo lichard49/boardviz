@@ -22,6 +22,10 @@
       <div class="section">
         <div class="row">
           <div class="col s12">
+            <button id="flip-button" class="btn waves-effect waves-light">
+              Flip board
+            </button>
+
             <p id="output">Hello world</p>
 
             <object id="board" width="1500em"
@@ -35,33 +39,47 @@
     <!--JavaScript at end of body for optimized loading-->
     <script type="text/javascript" src="js/materialize.min.js"></script>
     <script type="text/javascript">
-      document.getElementById('board').onload = function(e) {
-        console.log('svg loaded');
-        var svg = document.getElementById('board').getSVGDocument();
-        console.log(svg);
+      var board_sides = [
+        'svg/arduino_Uno_Rev3-02-TH-B_Cu.svg',
+        'svg/arduino_Uno_Rev3-02-TH-F_Cu.svg'
+      ];
+      var current_board_side = 0;
 
-        var paths = svg.getElementsByTagName('path');
-        for (var i = paths.length - 1; i >= 0; i--) {
-          var path = $(paths[i]);
+      $(document).ready(function (e) {
+        // show "other" board file
+        $('#flip-button').click(function (e) {
+          current_board_side = 1 - current_board_side;
+          $('#board').attr('data', board_sides[current_board_side]);
+        });
 
-          // default color to black
-          path.attr('stroke', 'black');
+        document.getElementById('board').onload = function(e) {
+          console.log('svg loaded');
+          var svg = document.getElementById('board').getSVGDocument();
+          console.log(svg);
 
-          // change colors when hovering
-          path.hover(function (e) {
-            if (e.type === 'mouseenter') {
-              $(e.target).attr('stroke', 'blue');
-            } else if (e.type === 'mouseleave') {
-              $(e.target).attr('stroke', 'black');
-            }
-          });
+          var paths = svg.getElementsByTagName('path');
+          for (var i = paths.length - 1; i >= 0; i--) {
+            var path = $(paths[i]);
 
-          // show what path is clicked on
-          path.click(function (e) {
-            $('#output').text('Clicked: ' + e.target.outerHTML);
-          });
+            // default color to black
+            path.attr('stroke', 'black');
+
+            // change colors when hovering
+            path.hover(function (e) {
+              if (e.type === 'mouseenter') {
+                $(e.target).attr('stroke', 'blue');
+              } else if (e.type === 'mouseleave') {
+                $(e.target).attr('stroke', 'black');
+              }
+            });
+
+            // show what path is clicked on
+            path.click(function (e) {
+              $('#output').text('Clicked: ' + e.target.outerHTML);
+            });
+          }
         }
-      }
+      });
     </script>
   </body>
 </html>
